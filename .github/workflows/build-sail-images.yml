@@ -58,10 +58,14 @@ jobs:
             echo "🚀 Building Sail image for PHP $ver..."
             cd sail/runtimes/$ver
 
-            IMAGE_TAG=${REGISTRY}/${IMAGE_NAME_LC}:php-${ver}
-            LATEST_TAG=${REGISTRY}/${IMAGE_NAME_LC}:php-${ver}-latest
+            IMAGE_TAG=${REGISTRY}/${IMAGE_NAME}:php-${ver}
+            LATEST_TAG=${REGISTRY}/${IMAGE_NAME}:php-${ver}-latest
 
-            docker build -t $IMAGE_TAG -t $LATEST_TAG .
+            docker build \
+              --build-arg WWWGROUP=1000 \
+              -t $IMAGE_TAG \
+              -t $LATEST_TAG .
+
             docker push $IMAGE_TAG
             docker push $LATEST_TAG
 
