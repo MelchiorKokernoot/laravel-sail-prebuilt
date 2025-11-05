@@ -1,0 +1,74 @@
+name: Build and Publish Laravel Sail Images
+
+on:
+  schedule:
+    - cron: '0 3 * * *'  # Run daily at 03:00 UTC
+  workflow_dispatch:       # Allow manual runs
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    env:
+      REGISTRY: ghcr.io
+      IMAGE_NAME: ${{ github.repository_owner }}/sail
+      PHP_VERSIONS: "8.4 8.3 8.2"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Clone Laravel Sail
+        run: |
+          git clone https://github.com/laravel/sail.git
+          cd sail
+          git rev-parse HEAD > ../sail_commit.txt
+
+      - name: Cache last Sail commit hash
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: .sail_commit_cache
+          key: sail-${{ hashFiles('sail_commit.txt') }}
+
+      - name: Skip build if no Sail updates
+        if: steps.cache.outputs.cache-hit == 'true'
+        run: |
+          echo "No updates in Laravel Sail — skipping build."
+          echo "skip=true" >> $GITHUB_ENV
+
+      - name: Build and push Docker images
+        if: env.skip != 'true'
+        run: |
+          for ver in $PHP_VERSIONS; do
+            echo "🚀 Building Sail image for PHP $ver..."
+            cd sail/runtimes/$ver
+
+            IMAGE_TAG=${REGISTRY}/${IMAGE_NAME}:php-${ver}
+            LATEST_TAG=${REGISTRY}/${IMAGE_NAME}:php-${ver}-latest
+
+            docker build -t $IMAGE_TAG -t $LATEST_TAG .
+            docker push $IMAGE_TAG
+            docker push $LATEST_TAG
+
+            cd ../../..
+          done
+
+      - name: Store current Sail commit hash
+        if: env.skip != 'true'
+        run: |
+          mkdir -p .sail_commit_cache
+          cp sail_commit.txt .sail_commit_cache/
