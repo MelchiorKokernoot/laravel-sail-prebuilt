@@ -53,12 +53,13 @@ jobs:
       - name: Build and push Docker images
         if: env.skip != 'true'
         run: |
+          IMAGE_NAME_LC=$(echo "${IMAGE_NAME}" | tr '[:upper:]' '[:lower:]')
           for ver in $PHP_VERSIONS; do
             echo "🚀 Building Sail image for PHP $ver..."
             cd sail/runtimes/$ver
 
-            IMAGE_TAG=${REGISTRY}/${IMAGE_NAME}:php-${ver}
-            LATEST_TAG=${REGISTRY}/${IMAGE_NAME}:php-${ver}-latest
+            IMAGE_TAG=${REGISTRY}/${IMAGE_NAME_LC}:php-${ver}
+            LATEST_TAG=${REGISTRY}/${IMAGE_NAME_LC}:php-${ver}-latest
 
             docker build -t $IMAGE_TAG -t $LATEST_TAG .
             docker push $IMAGE_TAG
