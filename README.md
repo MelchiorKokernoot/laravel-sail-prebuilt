@@ -21,13 +21,13 @@ Pull the prebuilt Sail images directly from GHCR:
 
 ```bash
 # PHP 8.4
-docker pull ghcr.io/<your-github-username>/sail:php-8.4
+docker pull ghcr.io/MelchiorKokernoot/sail:php-8.4
 
 # PHP 8.3
-docker pull ghcr.io/<your-github-username>/sail:php-8.3
+docker pull ghcr.io/MelchiorKokernoot/sail:php-8.3
 
 # PHP 8.2
-docker pull ghcr.io/<your-github-username>/sail:php-8.2
+docker pull ghcr.io/MelchiorKokernoot/sail:php-8.2
 ````
 
 You can also use them in your own `docker-compose.yml`:
@@ -35,7 +35,7 @@ You can also use them in your own `docker-compose.yml`:
 ```yaml
 services:
   laravel.test:
-    image: ghcr.io/<your-github-username>/sail:php-8.4
+    image: ghcr.io/MelchiorKokernoot/sail:php-8.4
     ports:
       - "80:80"
 ```
@@ -60,7 +60,6 @@ The GitHub Actions workflow:
 After the first successful build:
 
 1. Go to your **GitHub profile → Packages**
-   (e.g. [https://github.com/users/](https://github.com/users/)<your-github-username>/packages)
 2. Click the `sail` package.
 3. Open **Package settings** → set **“Public”**.
 
