@@ -21,13 +21,13 @@ Pull the prebuilt Sail images directly from GHCR:
 
 ```bash
 # PHP 8.4
-docker pull ghcr.io/MelchiorKokernoot/sail:php-8.4
+docker pull ghcr.io/melchiorKokernoot/sail:php-8.4
 
 # PHP 8.3
-docker pull ghcr.io/MelchiorKokernoot/sail:php-8.3
+docker pull ghcr.io/melchiorKokernoot/sail:php-8.3
 
 # PHP 8.2
-docker pull ghcr.io/MelchiorKokernoot/sail:php-8.2
+docker pull ghcr.io/melchiorKokernoot/sail:php-8.2
 ````
 
 You can also use them in your own `docker-compose.yml`:
@@ -35,7 +35,7 @@ You can also use them in your own `docker-compose.yml`:
 ```yaml
 services:
   laravel.test:
-    image: ghcr.io/MelchiorKokernoot/sail:php-8.4
+    image: ghcr.io/melchiorKokernoot/sail:php-8.4
     ports:
       - "80:80"
 ```
